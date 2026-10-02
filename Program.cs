@@ -1,5 +1,8 @@
+using HelpDesk.API.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<ChamadosService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
