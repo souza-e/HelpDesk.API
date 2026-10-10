@@ -10,7 +10,7 @@ public class ChamadosController : ControllerBase
 {
     //A interface IEnumerable no C# serve para permitir que uma 
     // coleção de dados seja iterada (percorrida) usando um laço 
-
+    #region Conf. Service
     private readonly ChamadosService _chamadosService;
 
     // O construtor da classe ChamadosController recebe uma instância do serviço ChamadosService como parâmetro.
@@ -18,7 +18,14 @@ public class ChamadosController : ControllerBase
     {
         _chamadosService = chamadosService;
     }
+    #endregion
 
+
+
+
+
+
+    #region CRUD 
     [HttpGet]
     public IEnumerable<Chamado> Get()
     {
@@ -43,9 +50,17 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpPut("{id}")] //O put é usado para atualizar um recurso existente 
-    public Chamado Update(int id, Chamado chamado)
+    public IActionResult Update(int id, Chamado chamado)
     {
-        return _chamadosService.Update(id, chamado);
+        var chamadoAtualizado = _chamadosService.Update(id, chamado);
+
+        if (chamadoAtualizado == null)
+        {
+
+            return NotFound();
+        }
+
+        return Ok(chamadoAtualizado);
     }
 
     [HttpDelete("{id}")]
@@ -53,7 +68,9 @@ public class ChamadosController : ControllerBase
     {
 
         _chamadosService.Delete(id);
-      
+
         return NoContent();
     }
+
+    #endregion
 }
