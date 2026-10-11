@@ -5,7 +5,7 @@ namespace HelpDesk.API.Services;
 
 
 public class ChamadosService
-{   
+{
     // o Readonly é usado para garantir que a variável _context não seja modificada após a sua inicialização no construtor da classe. Isso ajuda a manter a integridade do serviço e evita alterações acidentais no contexto do banco de dados durante a execução do serviço.
     private readonly HelpDeskDbContext _context;
     public ChamadosService(HelpDeskDbContext context)
@@ -19,13 +19,13 @@ public class ChamadosService
     {
 
         return _context.Chamados.ToList();
-       
+
     }
 
     public Chamado? GetById(int id)
     {
 
-        return  _context.Chamados.FirstOrDefault(c => c.Id == id);
+        return _context.Chamados.FirstOrDefault(c => c.Id == id);
     }
 
 
@@ -38,8 +38,8 @@ public class ChamadosService
     }
     public Chamado? Update(int id, Chamado chamado)
     {
-       var chamadoExistente = _context.Chamados.FirstOrDefault(c => c.Id == id);
-      
+        var chamadoExistente = _context.Chamados.FirstOrDefault(c => c.Id == id);
+
         if (chamadoExistente == null)
         {
             throw new Exception("Chamado não encontrado.");
@@ -55,12 +55,22 @@ public class ChamadosService
         return chamadoExistente;
 
     }
-    public void Delete(int id)
+    public bool Delete(int id)
     {
-        // Lógica para excluir o chamado com o ID fornecido
-    }
+        var chamado = _context.Chamados.FirstOrDefault(c => c.Id == id);
+
+        if (chamado == null)
+        {
+            return false;
+
+
+        }
+        _context.Chamados.Remove(chamado);
+        _context.SaveChanges();
+        return true;
 
     #endregion
 
 
+    }
 }
