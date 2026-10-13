@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using HelpDesk.API.Models;
 using HelpDesk.API.Services;
+using System.Collections.Generic;
 
 namespace HelpDesk.API.Controllers;
 
@@ -42,11 +43,14 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpPost]
-    public Chamado Create(Chamado chamado)
+    public IActionResult Create([FromBody] Chamado chamado)
     {
+        var novoChamado = _chamadosService.Create(chamado);
 
-
-        return _chamadosService.Create(chamado);
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = novoChamado.Id },
+            novoChamado);
     }
 
     [HttpPut("{id}")] //O put é usado para atualizar um recurso existente 
@@ -72,7 +76,7 @@ public class ChamadosController : ControllerBase
         {
             return NotFound();
         }
-       
+
 
         return NoContent();
     }

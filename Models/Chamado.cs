@@ -20,8 +20,12 @@ public class Chamado
   public string Descricao { get; set; } = string.Empty; //o string.Empty é usado para inicializar a propriedade com uma string vazia, evitando valores nulos.
 
   [Required(ErrorMessage = "O status é obrigatório.")]
+  [RegularExpression ("^(Aberto|Em Andamento|Fechado)$", ErrorMessage = "O status deve ser 'Aberto', 'Em Andamento' ou 'Fechado'.")]
   public string Status { get; set; } = string.Empty;
+
+
   [Required(ErrorMessage = "A prioridade é obrigatória.")]
+  [RegularExpression("^(Baixa|Média|Alta)$", ErrorMessage = "A prioridade deve ser 'Baixa', 'Média' ou 'Alta'.")]
   public string Prioridade { get; set; } = string.Empty;
 
 
