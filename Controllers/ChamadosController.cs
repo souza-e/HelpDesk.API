@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using HelpDesk.API.Models;
 using HelpDesk.API.Services;
 using System.Collections.Generic;
+using HelpDesk.API.DTOs;
 
 namespace HelpDesk.API.Controllers;
 
@@ -43,8 +44,16 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] Chamado chamado)
+    public IActionResult Create(CriarChamadoDto dto)
     {
+     var chamado = new Chamado
+        {
+            Titulo = dto.Titulo,
+            Descricao = dto.Descricao,
+            Status = dto.Status,
+            Prioridade = dto.Prioridade
+        };
+
         var novoChamado = _chamadosService.Create(chamado);
 
         return CreatedAtAction(
