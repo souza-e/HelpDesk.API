@@ -29,24 +29,32 @@ public class ChamadosController : ControllerBase
 
     #region CRUD 
     [HttpGet]
-    public IEnumerable<Chamado> Get()
+    public ActionResult<IEnumerable<ChamadoResponseDto>> Get()
     {
 
-        return _chamadosService.GetAll();
+        var chamados = _chamadosService.GetAll();
+        var resposta = chamados.Select(ParaResponseDto).ToList();
+
+        return Ok(resposta);
+
     }
 
     [HttpGet("{id}")]
-    public Chamado GetById(int id)
+    public ActionResult<ChamadoResponseDto> GetById(int id)
     {
-        return _chamadosService.GetById(id);
+        var chamado = _chamadosService.GetById(id);
+        if (chamado == null)
+        {
+            return NotFound();
+        }
 
-
+        return Ok(ParaResponseDto(chamado));
     }
 
     [HttpPost]
     public IActionResult Create(CriarChamadoDto dto)
     {
-     var chamado = new Chamado
+        var chamado = new Chamado
         {
             Titulo = dto.Titulo,
             Descricao = dto.Descricao,
@@ -59,12 +67,19 @@ public class ChamadosController : ControllerBase
         return CreatedAtAction(
             nameof(GetById),
             new { id = novoChamado.Id },
-            novoChamado);
+           ParaResponseDto(novoChamado));
     }
 
     [HttpPut("{id}")] //O put é usado para atualizar um recurso existente 
-    public IActionResult Update(int id, Chamado chamado)
+    public IActionResult Update(int id, AtualizarChamadoDto dto)
     {
+        var chamado = new Chamado
+        {
+            Titulo = dto.Titulo,
+            Descricao = dto.Descricao,
+            Status = dto.Status,
+            Prioridade = dto.Prioridade
+        };
         var chamadoAtualizado = _chamadosService.Update(id, chamado);
 
         if (chamadoAtualizado == null)
@@ -73,7 +88,7 @@ public class ChamadosController : ControllerBase
             return NotFound();
         }
 
-        return Ok(chamadoAtualizado);
+        return Ok(ParaResponseDto(chamadoAtualizado));
     }
 
     [HttpDelete("{id}")]
@@ -91,4 +106,17 @@ public class ChamadosController : ControllerBase
     }
 
     #endregion
+
+
+    private static ChamadoResponseDto ParaResponseDto(Chamado chamado)
+    {
+        return new ChamadoResponseDto
+        {
+            Id = chamado.Id,
+            Titulo = chamado.Titulo,
+            Descricao = chamado.Descricao,
+            Status = chamado.Status,
+            Prioridade = chamado.Prioridade
+        };
+    }
 }
