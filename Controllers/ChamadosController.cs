@@ -92,7 +92,7 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete([FromRoute] int id)
+    public IActionResult Delete( int id)
     {
         var deleted = _chamadosService.Delete(id);
 

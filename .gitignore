@@ -6,6 +6,8 @@
 # dotenv files
 .env
 appsettings.Development.json
+# User Secrets
+secrets.json
 
 # User-specific files
 *.rsuser
@@ -468,6 +470,10 @@ ehthumbs_vista.db
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
+# Arquivos de compilação
+bin/
+obj/
 
 # Windows Installer files
 *.cab
