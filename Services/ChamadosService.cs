@@ -1,5 +1,6 @@
 using HelpDesk.API.Models;
 using HelpDesk.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace HelpDesk.API.Services;
 
@@ -15,34 +16,35 @@ public class ChamadosService
 
 
     #region Service Methods
-    public IEnumerable<Chamado> GetAll()
+    public async Task<List<Chamado>> GetAllAsync()
     {
 
-        return _context.Chamados.ToList();
+        return await _context.Chamados.ToListAsync();
 
     }
 
-    public Chamado? GetById(int id)
+    public async Task<Chamado?> GetByIdAsync(int id)
     {
 
-        return _context.Chamados.FirstOrDefault(c => c.Id == id);
+        return await _context.Chamados.FirstOrDefaultAsync(c => c.Id == id);
     }
 
 
-    public Chamado Create(Chamado chamado)
+    public async Task<Chamado> CreateAsync(Chamado chamado)
     {
         _context.Chamados.Add(chamado);
-        _context.SaveChanges();
+       await  _context.SaveChangesAsync();
 
-        return chamado;
+        return (chamado);
     }
-    public Chamado? Update(int id, Chamado chamado)
+    public async Task<Chamado?> UpdateAsync(int id, Chamado chamado)
     {
-        var chamadoExistente = _context.Chamados.FirstOrDefault(c => c.Id == id);
+        var chamadoExistente = await _context.Chamados.FirstOrDefaultAsync(c => c.Id == id);
 
         if (chamadoExistente == null)
         {
-            throw new Exception("Chamado não encontrado.");
+         
+            return null;
         }
 
         // Atualiza os campos do chamado existente com os valores do chamado fornecido
@@ -50,14 +52,14 @@ public class ChamadosService
         chamadoExistente.Descricao = chamado.Descricao;
         chamadoExistente.Status = chamado.Status;
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return chamadoExistente;
 
     }
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        var chamado = _context.Chamados.FirstOrDefault(c => c.Id == id);
+        var chamado = await _context.Chamados.FirstOrDefaultAsync(c => c.Id == id);
 
         if (chamado == null)
         {
@@ -66,7 +68,7 @@ public class ChamadosService
 
         }
         _context.Chamados.Remove(chamado);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return true;
 
     #endregion

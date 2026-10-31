@@ -29,10 +29,10 @@ public class ChamadosController : ControllerBase
 
     #region CRUD 
     [HttpGet]
-    public ActionResult<IEnumerable<ChamadoResponseDto>> Get()
+    public async Task<ActionResult<IEnumerable<ChamadoResponseDto>>> Get()
     {
 
-        var chamados = _chamadosService.GetAll();
+        var chamados = await _chamadosService.GetAllAsync();
         var resposta = chamados.Select(ParaResponseDto).ToList();
 
         return Ok(resposta);
@@ -40,9 +40,10 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<ChamadoResponseDto> GetById(int id)
+    public async Task<ActionResult<ChamadoResponseDto>> GetById(int id)
     {
-        var chamado = _chamadosService.GetById(id);
+        var chamado = await _chamadosService.GetByIdAsync(id);
+       
         if (chamado == null)
         {
             return NotFound();
@@ -51,8 +52,8 @@ public class ChamadosController : ControllerBase
         return Ok(ParaResponseDto(chamado));
     }
 
-    [HttpPost]
-    public IActionResult Create(CriarChamadoDto dto)
+    [HttpPost] // POST
+    public async Task<ActionResult> Create(CriarChamadoDto dto)
     {
         var chamado = new Chamado
         {
@@ -62,7 +63,7 @@ public class ChamadosController : ControllerBase
             Prioridade = dto.Prioridade
         };
 
-        var novoChamado = _chamadosService.Create(chamado);
+        var novoChamado = await _chamadosService.CreateAsync(chamado);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -71,7 +72,7 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpPut("{id}")] //O put é usado para atualizar um recurso existente 
-    public IActionResult Update(int id, AtualizarChamadoDto dto)
+    public async Task<IActionResult> UpdateAsync(int id, AtualizarChamadoDto dto)
     {
         var chamado = new Chamado
         {
@@ -80,7 +81,7 @@ public class ChamadosController : ControllerBase
             Status = dto.Status,
             Prioridade = dto.Prioridade
         };
-        var chamadoAtualizado = _chamadosService.Update(id, chamado);
+        var chamadoAtualizado = await _chamadosService.UpdateAsync(id, chamado);
 
         if (chamadoAtualizado == null)
         {
@@ -92,9 +93,9 @@ public class ChamadosController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete( int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var deleted = _chamadosService.Delete(id);
+        var deleted = await _chamadosService.DeleteAsync(id);
 
         if (!deleted)
         {
