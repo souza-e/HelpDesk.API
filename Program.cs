@@ -17,6 +17,25 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        await context.Response.WriteAsJsonAsync(new
+        {
+            title = "Erro interno do servidor",
+            status = 500,
+            detail = "Ocorreu um erro inesperado."
+        });
+    });
+});
+
+
+
+
 app.UseAuthorization();
 
 app.MapControllers();
